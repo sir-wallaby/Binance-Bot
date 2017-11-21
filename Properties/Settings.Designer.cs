@@ -22,17 +22,5 @@ namespace Bittrex_Bot.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MzgyMzk1MDAyMTc5MDI2OTQ0.DPVHWw.kSyLRzEV-h62Rj21P9h7NFWprpU")]
-        public string botToken {
-            get {
-                return ((string)(this["botToken"]));
-            }
-            set {
-                this["botToken"] = value;
-            }
-        }
     }
 }
