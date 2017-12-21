@@ -31,9 +31,11 @@ namespace Bittrex_Bot.Modules
         [Summary("Returns the ticker for the specified coin/token from Binance")] //.b btc -- .b eth
         public async Task BinanceTicker([Remainder] string coin)
         {
+            var typing = Context.Message.Channel.EnterTypingState();
             string _coin = coin.ToUpper();
             //error checking to make tell if bitcoin was entered. Default to false.
             Boolean wasBitcoinEntered = false;
+            
 
             try
             {
@@ -102,6 +104,8 @@ namespace Bittrex_Bot.Modules
                     //"Close Time: " + closeTimeUnix + "\n"
 
                     + "```");
+
+                
             }
 
             catch (WebException e)
@@ -109,10 +113,11 @@ namespace Bittrex_Bot.Modules
                 //output error to console
                 Console.WriteLine(e);
                 //outout message to user
-                await ReplyAsync("Coin not found: " + _coin.Replace("BTC",""));
+                await ReplyAsync("Coin not found: " + _coin.Replace("BTC","") + " :thumbsdown:");
                 
             }
 
+            typing.Dispose();
         }
       
     }

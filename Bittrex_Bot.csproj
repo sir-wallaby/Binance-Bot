@@ -199,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modules\BinanceModule.cs" />
+    <Compile Include="Modules\ClearChatModule.cs" />
     <Compile Include="Modules\HelperModule.cs" />
     <Compile Include="Modules\TestModule.cs" />
     <Compile Include="Program.cs" />
