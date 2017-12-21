@@ -15,15 +15,24 @@ using System.IO;
 
 namespace Bittrex_Bot.Modules
 {
+
+    /// <summary>
+    /// General api endpoint address for API calls
+    /// //https://api.binance.com
+    ///  /api/v1/ticker/allPrices
+    ///
+    ///  Pretty basic module to pull prices from Binance's public side API. 
+    ///  this doesn't require API keys since it doesn't place orders (buy or sell)
+    /// </summary>
     public class BinanceModule : ModuleBase
     {
-        //https://api.binance.com
-        ///api/v1/ticker/allPrices
+        
         [Command("b")] //Binance command
-        [Summary("Returns the ticker for the specified coin/token from Binance")]
+        [Summary("Returns the ticker for the specified coin/token from Binance")] //.b btc -- .b eth
         public async Task BinanceTicker([Remainder] string coin)
         {
             string _coin = coin.ToUpper();
+            //error checking to make tell if bitcoin was entered. Default to false.
             Boolean wasBitcoinEntered = false;
 
             try
@@ -31,14 +40,14 @@ namespace Bittrex_Bot.Modules
                 //default input parameter to be paired with BTC
                 _coin = _coin + "BTC";
                 //if block when searching for BTC just default to BTCUSDT
+                //also flip the bitcoin entered flag
                 if (_coin == "BTCBTC")
                 {
                     _coin = "BTCUSDT";
                     wasBitcoinEntered = true;
 
                 }
-
-                //Console.WriteLine(_coin);
+                
                 var apiStartingAddress = $"https://www.binance.com/api/v1/ticker/24hr?symbol={_coin}";
                 var bitcoinDollarValue = $"https://www.binance.com/api/v1/ticker/24hr?symbol=BTCUSDT";
 
@@ -53,6 +62,8 @@ namespace Bittrex_Bot.Modules
                 //another json object to computer dollar values
                 dynamic bitcoinObj = JObject.Parse(BTCUSDT);
 
+                client.Dispose();
+
                 //Value to computer XXX coin to USDT values
                 //real goal here needs to use USD but....
                 double USDTprice = bitcoinObj["lastPrice"];
@@ -62,48 +73,40 @@ namespace Bittrex_Bot.Modules
                 double lastPrice = binanceObj["lastPrice"];
                 double twentyfourHourChange = binanceObj["priceChangePercent"];
 
+                //this one requires some logic before we can output the price.
                 double lastPriceDollaredOut;
                 if (wasBitcoinEntered == false)
                 {
                      lastPriceDollaredOut = (USDTprice * lastPrice);
 
                 }
-                else if (wasBitcoinEntered == true)
+                else
                 {
                     lastPriceDollaredOut = (USDTprice);
                 }
-                else
-                {
-                    lastPriceDollaredOut = 0;
-                }
-
 
 
                 await ReplyAsync(
                     "```" +
 
-                    "Symbol: " + symbol + "\n" +
+                    "Symbol: " + symbol.Replace("BTC","") + "\n" +
 
                     "24 Hour Change: " + Math.Round(twentyfourHourChange, 2) + "%" + "\n" +
 
-                    "Last Price USDT: $" + Math.Round(lastPriceDollaredOut, 2) + "\n"
-
-                    //"Symbol" + +
-
-                    //"Symbol" + +
+                    "Last Price USDT: $" + Math.Round(lastPriceDollaredOut, 2) + "\n"                
 
                     + "```");
             }
-            catch (Exception e)
+
+            catch (WebException e)
             {
-                Console.WriteLine("Error: '{0}'", e);
+                //output error to console
+                Console.WriteLine(e);
+                //outout message to user
+                await ReplyAsync("Coin not found: " + _coin.Replace("BTC",""));
+                
             }
-          
 
-
-
-        }
-
-  
+        }  
     }
 }
