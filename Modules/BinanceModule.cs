@@ -26,16 +26,16 @@ namespace Bittrex_Bot.Modules
     /// </summary>
     public class BinanceModule : ModuleBase
     {
-        
+        [Name("Coin Search")]
         [Command("b")] //Binance command
-        [Summary("Returns the ticker for the specified coin/token from Binance")] //.b btc -- .b eth
+        [Summary("Returns the ticker for the specified coin/token from Binance" + " /n" + "Usage: .b eth ")]       
         public async Task BinanceTicker([Remainder] string coin)
         {
             var typing = Context.Message.Channel.EnterTypingState();
             string _coin = coin.ToUpper();
             //error checking to make tell if bitcoin was entered. Default to false.
             Boolean wasBitcoinEntered = false;
-            
+
 
             try
             {
@@ -49,7 +49,7 @@ namespace Bittrex_Bot.Modules
                     wasBitcoinEntered = true;
 
                 }
-                
+
                 var apiStartingAddress = $"https://www.binance.com/api/v1/ticker/24hr?symbol={_coin}";
                 var bitcoinDollarValue = $"https://www.binance.com/api/v1/ticker/24hr?symbol=BTCUSDT";
 
@@ -74,14 +74,14 @@ namespace Bittrex_Bot.Modules
                 string symbol = binanceObj["symbol"];
                 double lastPrice = binanceObj["lastPrice"];
                 double twentyfourHourChange = binanceObj["priceChangePercent"];
-                
 
-                
+
+
                 //this one requires some logic before we can output the price.
                 double lastPriceDollaredOut;
                 if (wasBitcoinEntered == false)
                 {
-                     lastPriceDollaredOut = (USDTprice * lastPrice);
+                    lastPriceDollaredOut = (USDTprice * lastPrice);
 
                 }
                 else
@@ -89,23 +89,25 @@ namespace Bittrex_Bot.Modules
                     lastPriceDollaredOut = (USDTprice);
                 }
 
+                var builder = new EmbedBuilder()
+                {
+                    Color = new Color(114, 137, 218),
+                    Description =               
 
-                await ReplyAsync(
-                    "```" +
-
-                    "Symbol: " + symbol.Replace("BTC","") + "\n" + "\n" + 
+                    "Symbol: " + symbol.Replace("BTC", "") + "\n" + "\n" +
 
                     "24 Hour Change: " + Math.Round(twentyfourHourChange, 2) + "%" + "\n" +
 
                     "Last Price USDT: $" + Math.Round(lastPriceDollaredOut, 2) + "\n" +
-                    
-                    "Price Versus BTC: " + (decimal)lastPrice + "\n" 
-                    
-                    //"Close Time: " + closeTimeUnix + "\n"
 
-                    + "```");
+                    "Price Versus BTC: " + (decimal)lastPrice + "\n"                   
 
-                
+                    
+                };
+
+                await ReplyAsync("", false, builder.Build());
+
+
             }
 
             catch (WebException e)
