@@ -6,7 +6,6 @@ using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
-using CoinMarketCap;
 
 namespace Bittrex_Bot.Modules
 {    public class TestModule : ModuleBase
@@ -34,8 +33,5 @@ namespace Bittrex_Bot.Modules
             return someText;
 
         }
-
-
-
     }
 }
