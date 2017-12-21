@@ -21,47 +21,50 @@ namespace Bittrex_Bot.Modules
         ///api/v1/ticker/allPrices
         [Command("b")] //Binance command
         [Summary("Returns the ticker for the specified coin/token from Binance")]
-        public async Task BinanceTicker() //[Remainder] string coin)
+        public async Task BinanceTicker([Remainder] string coin)
         {
-            //string _coin = coin;
-            var apiStartingValue = $"https://api.binance.com/api/v1/ticker/allPrices";
+            string _coin = coin.ToUpper();
+            //default input parameter to be paired with BTC
+            _coin = _coin + "BTC";
+            Console.WriteLine(_coin);
+            var apiStartingValue = $"https://www.binance.com/api/v1/ticker/24hr?symbol={_coin}";
 
+            //open web client
             var client = new WebClient();
-
+            //download the json into a string
             string jsonRaw = client.DownloadString(apiStartingValue);
+            //parse the json into a raw object
+            dynamic binanceObj = JObject.Parse(jsonRaw);
 
-            JArray array = JArray.Parse(jsonRaw);
+            //declare the variables that need to be output
+            string symbol = binanceObj["symbol"];
+            string lastPrice = binanceObj["lastPrice"];
+            string twentyfourHourChange = binanceObj["priceChange"];
 
-            foreach (JObject o in array.Children<JObject>())
-            {
-                foreach (JProperty p in o.Properties())
-                {
-                    string name = p.Name;
-                    string value = (string)p.Value;
-                    await ReplyAsync(
-                               "```" + (name + " -- " + value)
-                               + "```");
-                    //Console.WriteLine(name + " -- " + value);
-                }
-            }
+          
 
-           
+
+            await ReplyAsync(
+                "```" +
+                "Symbol" + symbol + "\n" +
+
+                "Last Price" + lastPrice + "\n" +
+
+                "24 Hour Change" + twentyfourHourChange + "\n" 
+
+                //"Symbol" + +
+
+                //"Symbol" + +
+
+                //"Symbol" + +
+
+                +"```");
+
+
+
+
         }
 
-        //[Command("b")] //Binance command
-        //[Summary("Returns the ticker for the specified coin/token from Binance")]        
-        //public async Task BinanceTicker([Remainder] string coin)
-        //{
-        //    string _coin = coin;
-        //    var api = new BinanceApi();
-
-        //    var book = await api.GetOrderBookAsync(Symbol.BTC_USDT);
-
-
-        //    Console.WriteLine(book);
-
-        //    await ReplyAsync(_coin);
-        //}
-
+  
     }
 }
