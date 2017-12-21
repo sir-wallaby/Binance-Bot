@@ -72,7 +72,9 @@ namespace Bittrex_Bot.Modules
                 string symbol = binanceObj["symbol"];
                 double lastPrice = binanceObj["lastPrice"];
                 double twentyfourHourChange = binanceObj["priceChangePercent"];
+                
 
+                
                 //this one requires some logic before we can output the price.
                 double lastPriceDollaredOut;
                 if (wasBitcoinEntered == false)
@@ -89,11 +91,15 @@ namespace Bittrex_Bot.Modules
                 await ReplyAsync(
                     "```" +
 
-                    "Symbol: " + symbol.Replace("BTC","") + "\n" +
+                    "Symbol: " + symbol.Replace("BTC","") + "\n" + "\n" + 
 
                     "24 Hour Change: " + Math.Round(twentyfourHourChange, 2) + "%" + "\n" +
 
-                    "Last Price USDT: $" + Math.Round(lastPriceDollaredOut, 2) + "\n"                
+                    "Last Price USDT: $" + Math.Round(lastPriceDollaredOut, 2) + "\n" +
+                    
+                    "Price Versus BTC: " + (decimal)lastPrice + "\n" 
+                    
+                    //"Close Time: " + closeTimeUnix + "\n"
 
                     + "```");
             }
@@ -107,6 +113,7 @@ namespace Bittrex_Bot.Modules
                 
             }
 
-        }  
+        }
+      
     }
 }
