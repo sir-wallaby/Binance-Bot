@@ -34,7 +34,7 @@ namespace Bittrex_Bot.Modules
     {
         [Name("Coin Search")]
         [Command("b")] //Binance command
-        [Summary("Returns the ticker for the specified coin/token from Binance" + " /n" + "Usage: .b eth ")]       
+        [Summary("Returns the ticker for the specified coin/token from Binance" + "Usage: .b eth ")]       
         public async Task BinanceTicker([Remainder] string coin)
         {
             var typing = Context.Message.Channel.EnterTypingState();
