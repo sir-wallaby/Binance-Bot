@@ -23,6 +23,12 @@ namespace Bittrex_Bot.Modules
     ///
     ///  Pretty basic module to pull prices from Binance's public side API. 
     ///  this doesn't require API keys since it doesn't place orders (buy or sell)
+    ///
+    ///
+    /// TODO: Add in price check versus ETH
+    ///         Check for more errors that are caused within BTC calls
+    ///         Figure out a way to pull back last hour price change
+    ///         Change price output to include numbers that end in zero. EX. $1.90, right now it shows $1.9
     /// </summary>
     public class BinanceModule : ModuleBase
     {
