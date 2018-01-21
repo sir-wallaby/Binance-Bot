@@ -1,9 +1,5 @@
-# Binance Bot (NOT BITTREX)
-
-I have moved to Binance since Bittrex has so many problems, but.... Idea still Applies. 
+# Binance Bot
 
 This bot's purpose is to pull prices from Binance's public side API. 
 
-
-
-Example Command: .b BTC
+Example Command: .b VEN
