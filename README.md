@@ -7,6 +7,7 @@ Example Command: .b VEN
 Output:
 
 Symbol: VEN
+
 24 Hour Change: 12.26%
 
 Last Price USDT: $8.13
