@@ -7,7 +7,7 @@ using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Configuration;
 
-namespace Bittrex_Bot.Modules
+namespace Binance_Bot.Modules
 {
     public class HelperModule : ModuleBase<SocketCommandContext>
     {

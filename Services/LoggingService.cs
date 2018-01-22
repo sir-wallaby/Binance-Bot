@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Bittrex_Bot.Services
+namespace Binance_Bot.Services
 {
 
     public class LoggingService

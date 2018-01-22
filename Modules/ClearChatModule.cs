@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bittrex_Bot.Modules
+namespace Binance_Bot.Modules
 {
     [Name("Clear Chat")]
     [RequireContext(ContextType.Guild)]

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 
-namespace Bittrex_Bot.Services
+namespace Binance_Bot.Services
 {
 
     public class CommandHandler

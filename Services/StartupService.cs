@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Bittrex_Bot.Services
+namespace Binance_Bot.Services
 {    public class StartupService
     {
         private readonly DiscordSocketClient _discord;

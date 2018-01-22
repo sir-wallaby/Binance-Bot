@@ -5,10 +5,10 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using Bittrex_Bot.Services;
+using Binance_Bot.Services;
 
 
-namespace Bittrex_Bot
+namespace Binance_Bot
 {
     public class Program
     {
