@@ -7,6 +7,7 @@ I have coded the bot to return last price versus Tether, the past hour based on 
 Example Command: .b VEN
 
 Output:
+
 Symbol: VEN
 
 Last Price USDT: $8.29
