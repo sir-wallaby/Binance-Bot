@@ -23,15 +23,10 @@ namespace Binance_Bot.Modules
     ///  
     ///  interval URL
     ///  https://www.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1m 
-    ///
-    ///  Pretty basic module to pull prices from Binance's public side API. 
-    ///  this doesn't require API keys since it doesn't place orders (buy or sell)
-    ///
-    ///
     /// TODO: 
     ///         Add in price check versus ETH
     ///         Check for more errors that are caused within BTC calls --solved 1
-    ///         Figure out a way to pull back last hour price change
+    ///         Figure out a way to pull back last hour price change -- related to klines I believe
     ///         Change price output to include numbers that end in zero. EX. $1.90, right now it shows $1.9 -- DONE?
     /// </summary>
     public class BinanceModule : ModuleBase
@@ -49,42 +44,37 @@ namespace Binance_Bot.Modules
 
             try
             {
-                _coin = _coin + "BTC"; //default input parameter to be paired with BTC
-                
-                //if block when searching for BTC just default to BTCUSDT
-                //also flip the bitcoin entered flag
+                _coin = _coin + "BTC"; //default input parameter to be paired with BTC                
+               
                 if (_coin == "BTCBTC")
-                {
+                {   //error checking for BTC pair - Default to BTCUSDT
                     _coin = "BTCUSDT";
                     wasBitcoinEntered = true;
                 }
 
                 var apiStartingAddress = $"https://www.binance.com/api/v1/ticker/24hr?symbol={_coin}";
                 var bitcoinDollarValue = $"https://www.binance.com/api/v1/ticker/24hr?symbol=BTCUSDT";
+                var hourChangeOfInputedSymbol = $"https://www.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1h";
 
-                //open web client
-                var client = new WebClient();
-                //download the json into a string
-                string jsonRaw = client.DownloadString(apiStartingAddress);
-                //download BTC value
-                string BTCUSDT = client.DownloadString(bitcoinDollarValue);
-                //parse the json into a raw object
-                dynamic binanceObj = JObject.Parse(jsonRaw);
-                //another json object to computer dollar values
+                var client = new WebClient(); //open web client
+
+                string jsonRawSymbolInput = client.DownloadString(apiStartingAddress);      //raw json data depending on input
+                string BTCUSDT = client.DownloadString(bitcoinDollarValue);                 //BTCUSDT raw data
+                string jsonRawHourChange = client.DownloadString(hourChangeOfInputedSymbol);//Hour change
+
+                dynamic binanceObj = JObject.Parse(jsonRawSymbolInput);
                 dynamic bitcoinObj = JObject.Parse(BTCUSDT);
+                //dynamic hourChangeObj = JObject.Parse(jsonRawHourChange);
 
                 client.Dispose();
 
-                //Value to computer XXX coin to USDT values
-                //real goal here needs to use USD but....
-                decimal USDTprice = bitcoinObj["lastPrice"];
+               decimal USDTprice = bitcoinObj["lastPrice"];
 
                 //declare the variables that need to be output
                 string symbol = binanceObj["symbol"];
                 decimal lastPrice = binanceObj["lastPrice"];
                 decimal twentyfourHourChange = binanceObj["priceChangePercent"];
-
-                //this one requires some logic before we can output the price.
+               
                 decimal lastPriceDollaredOut;
                 if (wasBitcoinEntered == false)
                 {
@@ -99,6 +89,7 @@ namespace Binance_Bot.Modules
                 if (symbol == "BTCUSDT")
                 {
                     symbol = "BTC";
+                    lastPrice = Math.Round(lastPrice, 2);
                 }
                 else
                 {
@@ -108,11 +99,11 @@ namespace Binance_Bot.Modules
                 var builder = new EmbedBuilder()
                 {
                     Color = new Color(114, 137, 218),
-                    Description =              
+                    Description =
                     "Symbol: " + symbol + "\n" + "\n" +
                     "24 Hour Change: " + Math.Round(twentyfourHourChange, 2) + "%" + "\n" +
                     "Last Price USDT: $" + Math.Round(lastPriceDollaredOut, 2) + "\n" +
-                    "Price Versus BTC: " + (decimal)lastPrice + "\n"           
+                    "Price Versus BTC: " + lastPrice + "\n"                    
                 };
 
                 await ReplyAsync("", false, builder.Build());
@@ -129,6 +120,6 @@ namespace Binance_Bot.Modules
 
             typing.Dispose();
         }
-      
+
     }
 }
