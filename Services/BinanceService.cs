@@ -26,6 +26,18 @@ namespace Binance_Bot.Services
             return wasBitcoinEntered;
         }
 
+        public Boolean ethereumEntered(string _coin)
+        {
+            Boolean wasEthereumEntered; //error checking to make tell if ETH was entered
+
+            if (_coin == "ETHETH") //This will only work inside this service. Outsourcing to Module will not work with this hardcoded value.
+                wasEthereumEntered = true;
+            else
+                wasEthereumEntered = false;
+
+            return wasEthereumEntered;
+        }
+
         public decimal bitcoinDollarValue()
         {
             var bitcoinDollarValue = $"https://www.binance.com/api/v1/ticker/24hr?symbol=BTCUSDT";
@@ -40,18 +52,51 @@ namespace Binance_Bot.Services
             return USDTprice;
         }
 
-        public decimal lastPriceUSDT(string _coin, string _jsonRawSymbolInput)
-        {
-            _coin = _coin + "BTC"; //default input parameter to be paired with BTC            
-
+        public decimal lastPriceUSDT(string _jsonRawSymbolInput)
+        {          
             var client = new WebClient(); //open web client
+
             dynamic binanceObj = JObject.Parse(_jsonRawSymbolInput);                     //create JObject containing the data of input compared with BTC          
 
             client.Dispose(); //close the client connection
-            decimal lastPrice = binanceObj["lastPrice"]; //holds the last sold price          
+
+            decimal lastPrice = binanceObj["lastPrice"]; //holds the last sold price   
             decimal lastPriceDollaredOut = Math.Round((lastPrice * bitcoinDollarValue()), 2);
 
             return lastPriceDollaredOut;
+        }
+
+        public decimal lastPriceETH(string _coin)
+        {
+            string coinETH = _coin.Replace("BTC","") + "ETH";
+            Boolean _bitcoinEntered = false;         
+
+            if (bitcoinEntered(_coin) == true)
+            {
+                _bitcoinEntered = true;
+                coinETH = "ETHBTC";
+            }
+
+            if (ethereumEntered(coinETH) == true) //use this variable since I need to replace BTC and coinETH calls that.
+            {
+                coinETH = "ETHBTC";
+            }
+            
+            var client = new WebClient();
+            var apiStartingAddressETH = $"https://www.binance.com/api/v1/ticker/24hr?symbol={coinETH}";
+            string jsonRawSymbolInputETH = client.DownloadString(apiStartingAddressETH);
+            dynamic binanceObj = JObject.Parse(jsonRawSymbolInputETH);
+            
+            client.Dispose();
+
+            decimal lastPrice = binanceObj["lastPrice"];            
+            
+            if (coinETH.Contains("ETHBTC") && _bitcoinEntered == false)
+            {
+                lastPrice = Math.Round((lastPrice * bitcoinDollarValue()), 2);
+            }
+
+            return lastPrice;
         }
 
         public decimal lastPriceOfInputCoin(string _coin)
