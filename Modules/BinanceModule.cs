@@ -70,17 +70,18 @@ namespace Binance_Bot.Modules
                     lastPriceOutput = bitcoinDollarValue();
                    lastPrice = Math.Round(lastPrice, 2);
                 }
-                
+
 
                 var builder = new EmbedBuilder()
                 {
                     Color = new Color(114, 137, 218),
                     Description =
-                    "Symbol: " + symbol + "\n"  + "\n" +
+                    "Symbol: " + symbol + "\n" + "\n" +
                     "Last Price USDT: $" + Math.Round(lastPriceOutput, 2) + "\n" +
-                    "1 Hour Change: " + Math.Round(percentChangePastHour(), 2) + '%' + " (as of " + currentTimestampDatetime() +")" + "\n" +
-                    "24 Hour Change: " + Math.Round(twentyfourHourChange, 2) + "%" + "\n" +                    
-                    "Price Versus BTC: " + lastPrice + "\n"           
+                    "1 Hour Change: " + Math.Round(percentChangePastHour(_coin), 2) + '%' + " (as of " + currentTimestampDatetime() + ")" + "\n" +
+                    "24 Hour Change: " + Math.Round(twentyfourHourChange, 2) + "%" + "\n" +
+                    "Price Versus BTC: " + lastPrice + "\n"
+                    
                     
                 };
 
@@ -138,25 +139,38 @@ namespace Binance_Bot.Modules
             return lastPriceDollaredOut;
         }
 
-
-        public decimal percentChangePastHour()
+        public decimal lastPriceOfInputCoin(string _coin)
         {
-            var hourChangeOfInputedSymbol = $"https://www.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1h";
+            //_coin = _coin + "BTC"; //default input parameter to be paired with BTC          
+            var client = new WebClient(); //open web client
+
+            var apiStartingAddress = $"https://www.binance.com/api/v1/ticker/24hr?symbol={_coin}";
+            string jsonRawSymbolInput = client.DownloadString(apiStartingAddress);
+            
+            dynamic binanceObj = JObject.Parse(jsonRawSymbolInput);                     //create JObject containing the data of input compared with BTC          
+
+            client.Dispose(); //close the client connection
+
+            decimal lastPrice = binanceObj["lastPrice"]; //holds the last sold price
+
+            return lastPrice;
+        }
+
+        public decimal percentChangePastHour(string _coin)
+        {
+            string _inputedCoin = _coin;
+            var hourChangeOfInputedSymbol = $"https://www.binance.com/api/v1/klines?symbol={_coin}&interval=1h";
 
             var client = new WebClient(); //open web client
             string jsonRawHourChange = client.DownloadString(hourChangeOfInputedSymbol);//Hour change data
-            dynamic previousHourCloseObj = JsonConvert.DeserializeObject(jsonRawHourChange);
             dynamic currentHourCloseObj = JsonConvert.DeserializeObject(jsonRawHourChange);
 
             client.Dispose();
             
-            var previousHourData = previousHourCloseObj[498];
-            var currentHourData = currentHourCloseObj[499];
-
-            decimal previousHourClose = previousHourData[4];
+            var currentHourData = currentHourCloseObj[498];
             decimal currentHourClose = currentHourData[4];
-
-            decimal oneHourChange = (currentHourClose - previousHourClose) / Math.Abs(previousHourClose) * 100;
+                       
+            decimal oneHourChange = (lastPriceOfInputCoin(_inputedCoin) - currentHourClose) / Math.Abs(currentHourClose) * 100;
 
             return oneHourChange;
 
