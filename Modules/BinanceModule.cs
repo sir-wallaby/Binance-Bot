@@ -74,8 +74,8 @@ namespace Binance_Bot.Modules
                     Description =
                     "Symbol: " + symbol + "\n" + "\n" +
                     "Last Price USDT: $" + Math.Round(lastPriceOutput, 2) + "\n" +
-                    "1 Hour Change: " + Math.Round(price.percentChangePastHour(_coin), 2) + "% " + "(as of " + price.currentTimestampDatetime().ToShortTimeString() + " - " +_coin + ": "  + price.closeOfLastHour(_coin) + ")" + "\n" +
-                    "24 Hour Change: " + Math.Round(twentyfourHourChange, 2) + "%" + "\n" +
+                    "1 Hour Change: " + price.arrowEmotes(Math.Round(price.percentChangePastHour(_coin), 2)) + "(as of " + price.currentTimestampDatetime().ToShortTimeString() + " - " +_coin + ": "  + price.closeOfLastHour(_coin) + ")" + "\n" +
+                    "24 Hour Change: " + price.arrowEmotes(Math.Round(twentyfourHourChange, 2)) + "\n" +
                     "Price Versus BTC: " + lastPrice + "\n" +
                    
                     "Price Versus ETH: " + price.lastPriceETH(_coin)                    

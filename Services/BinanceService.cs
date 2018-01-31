@@ -154,6 +154,16 @@ namespace Binance_Bot.Services
 
         }
 
+        public string arrowEmotes (decimal _price)
+        {
+            if (_price > 0)
+                return _price + "% <:uparrow:408097518757478420> ";
+            else if (_price < 0)
+                return _price + "% <:downarrow:408097499572600832> ";
+            else
+                return _price + "%";
+        }
+
         public DateTime previousTimestampDateTime()
         {
             var client = new WebClient(); //open web client
