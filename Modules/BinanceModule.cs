@@ -32,6 +32,7 @@ namespace Binance_Bot.Modules
             string _coin = coin.ToUpper();
             
             BinancePriceCalls price = new BinancePriceCalls();
+            CoinMarketCapService cmc = new CoinMarketCapService();
             
             try
             {
@@ -72,12 +73,12 @@ namespace Binance_Bot.Modules
                 {
                     Color = new Color(114, 137, 218),
                     Description =
-                    "Symbol: " + symbol + "\n" + "\n" +
+                    "Symbol: " + symbol + " (" + cmc.returnCoinFullName(symbol) +")" + "\n" + "\n" +
                     "Last Price USDT: $" + Math.Round(lastPriceOutput, 2) + "\n" +
-                    "1 Hour Change: " + price.arrowEmotes(Math.Round(price.percentChangePastHour(_coin), 2)) + "(as of " + price.currentTimestampDatetime().ToShortTimeString() + " - " +_coin + ": "  + price.closeOfLastHour(_coin) + ")" + "\n" +
+                    "1 Hour Change: " + price.arrowEmotes(Math.Round(price.percentChangePastHour(_coin), 2)) + "(as of " + price.currentTimestampDatetime().ToShortTimeString() + " - " + _coin + ": " + price.closeOfLastHour(_coin) + ")" + "\n" +
                     "24 Hour Change: " + price.arrowEmotes(Math.Round(twentyfourHourChange, 2)) + "\n" +
                     "Price Versus BTC: " + lastPrice + "\n" +
-                   
+
                     "Price Versus ETH: " + price.lastPriceETH(_coin)                    
                 };
 

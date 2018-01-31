@@ -123,7 +123,7 @@ namespace Binance_Bot.Services
 
             var client = new WebClient(); //open web client
             string jsonRawHourChange = client.DownloadString(hourChangeOfInputedSymbol);//Hour change data
-            dynamic currentHourCloseObj = JsonConvert.DeserializeObject(jsonRawHourChange);
+            dynamic currentHourCloseObj = JsonConvert.DeserializeObject(jsonRawHourChange);           
 
             client.Dispose();
 
